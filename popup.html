@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenAlgo Trading Controls</title>
+  <link href="css/styles.css" rel="stylesheet" type="text/css" />
+  <style>
+    body {
+      width: 280px;
+      padding: 1.5rem;
+      text-align: center;
+      background-color: var(--base-100);
+    }
+    .logo-container {
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: center;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    .status-container {
+      background-color: var(--base-200);
+      padding: 1rem;
+      border-radius: 0.75rem;
+      margin: 1rem 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .status-text {
+      margin: 0.5rem 0;
+      font-size: 0.875rem;
+      color: var(--base-content);
+    }
+    .success {
+      color: var(--success);
+      font-weight: 600;
+    }
+    .help-text {
+      font-size: 0.75rem;
+      color: var(--base-content);
+      opacity: 0.8;
+      margin-top: 1rem;
+      line-height: 1.4;
+    }
+    .badge {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-body p-2">
+      <div class="logo-container">
+        <h1 class="logo">OpenAlgo</h1>
+      </div>
+      
+      <div class="badge badge-primary">Trading Controls</div>
+      
+      <div class="status-container">
+        <div class="status-text success">
+          Trading buttons are ready to use
+        </div>
+      </div>
+      
+      <p class="help-text">
+        Use the vertical dots menu (⋮) on the trading buttons to configure settings
+      </p>
+      
+      <div class="flex justify-center gap-2 mt-2">
+        <span class="badge badge-outline" style="background-color: var(--le-color); color: white;">LE</span>
+        <span class="badge badge-outline" style="background-color: var(--lx-color); color: var(--neutral);">LX</span>
+        <span class="badge badge-outline" style="background-color: var(--se-color); color: white;">SE</span>
+        <span class="badge badge-outline" style="background-color: var(--sx-color); color: white;">SX</span>
+      </div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

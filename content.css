@@ -1,0 +1,76 @@
+/* Styling for OpenAlgo Trading Controls */
+.openalgo-controls-container {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+}
+
+.openalgo-drag-handle {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background-color: #ddd;
+  border-radius: 4px 4px 0 0;
+  cursor: move;
+}
+
+.openalgo-button {
+  font-weight: bold;
+  min-width: 40px;
+  cursor: pointer;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: white;
+}
+
+.openalgo-button.btn-success {
+  background-color: #4CAF50;
+}
+
+.openalgo-button.btn-warning {
+  background-color: #FFC107;
+}
+
+.openalgo-button.btn-error {
+  background-color: #F44336;
+}
+
+.openalgo-button.btn-info {
+  background-color: #2196F3;
+}
+
+.openalgo-button:hover {
+  opacity: 0.9;
+}
+
+.openalgo-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 15px;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  z-index: 10001;
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.openalgo-notification.success {
+  background-color: #4CAF50;
+}
+
+.openalgo-notification.error {
+  background-color: #F44336;
+}
+
+.openalgo-notification.fadeOut {
+  opacity: 0;
+}
