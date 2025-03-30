@@ -374,16 +374,18 @@ function injectStyles() {
       position: fixed;
       z-index: 10000;
       transition: box-shadow 0.2s ease;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
       font-size: 14px;
       line-height: 1.4;
       box-sizing: border-box;
+      color: #333333 !important;
     }
     
     .openalgo-controls-container *, .openalgo-controls-container *::before, .openalgo-controls-container *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     }
     
     .openalgo-controls-container:hover {
@@ -414,16 +416,18 @@ function injectStyles() {
     }
     
     .openalgo-button {
-      font-weight: bold;
+      font-weight: bold !important;
       min-width: 28px;
       cursor: pointer;
       border: none;
       padding: 3px 6px;
       border-radius: 3px;
-      color: white;
+      color: white !important;
       text-transform: uppercase;
-      font-size: 0.7rem;
+      font-size: 0.7rem !important;
       transition: all 0.15s ease;
+      opacity: 1 !important;
+      visibility: visible !important;
     }
     
     .openalgo-button:hover {
@@ -432,20 +436,23 @@ function injectStyles() {
     }
     
     .openalgo-button.btn-success {
-      background-color: #36D399;
+      background-color: #36D399 !important;
+      color: white !important;
     }
     
     .openalgo-button.btn-warning {
-      background-color: #FBBD23;
-      color: #1f2937;
+      background-color: #FBBD23 !important;
+      color: #1f2937 !important;
     }
     
     .openalgo-button.btn-error {
-      background-color: #F87272;
+      background-color: #F87272 !important;
+      color: white !important;
     }
     
     .openalgo-button.btn-info {
-      background-color: #3ABFF8;
+      background-color: #3ABFF8 !important;
+      color: white !important;
     }
     
     .openalgo-settings-icon {
@@ -454,17 +461,17 @@ function injectStyles() {
       justify-content: center;
       width: 18px;
       height: 18px;
-      background: #f2f2f2;
+      background: #f2f2f2 !important;
       border: 1px solid #d1d5db;
       border-radius: 3px;
       cursor: pointer;
-      color: #1f2937;
+      color: #1f2937 !important;
       transition: all 0.2s ease;
       margin-left: 2px;
     }
     
     .openalgo-settings-icon:hover {
-      background-color: #e5e7eb;
+      background-color: #e5e7eb !important;
     }
     
     .openalgo-settings-panel {
@@ -472,13 +479,14 @@ function injectStyles() {
       top: 100%;
       right: 0;
       width: 250px;
-      background-color: white;
+      background-color: white !important;
       border-radius: 4px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       margin-top: 4px;
       z-index: 10001;
       animation: slideDown 0.2s ease;
       pointer-events: auto;
+      color: #333333 !important;
     }
     
     @keyframes slideDown {
@@ -509,9 +517,11 @@ function injectStyles() {
     }
     
     .openalgo-controls-container .form-group label {
-      font-size: 0.7rem;
-      color: #374151;
-      font-weight: 600;
+      font-size: 0.7rem !important;
+      color: #374151 !important;
+      font-weight: 600 !important;
+      opacity: 1 !important;
+      visibility: visible !important;
     }
     
     .openalgo-controls-container .form-group input, 
@@ -519,13 +529,16 @@ function injectStyles() {
       padding: 3px 6px;
       border: 1px solid #d1d5db;
       border-radius: 3px;
-      font-size: 0.75rem;
+      font-size: 0.75rem !important;
       transition: all 0.2s ease;
-      background-color: white;
+      background-color: white !important;
       z-index: 10002;
       position: relative;
       width: 100%;
       height: auto;
+      color: #333333 !important;
+      opacity: 1 !important;
+      visibility: visible !important;
     }
     
     .openalgo-controls-container .form-group input:focus, 
@@ -542,25 +555,25 @@ function injectStyles() {
       justify-content: center;
       text-align: center;
       border-radius: 3px;
-      font-weight: 600;
+      font-weight: 600 !important;
       text-transform: uppercase;
       border: none;
     }
     
     .openalgo-controls-container .btn-primary {
-      background-color: #570df8;
-      color: white;
+      background-color: #570df8 !important;
+      color: white !important;
     }
     
     .openalgo-controls-container .btn-primary:hover {
-      background-color: #4506cb;
+      background-color: #4506cb !important;
     }
     
     .openalgo-controls-container .btn-xs {
       height: 1.5rem;
       padding-left: 0.5rem;
       padding-right: 0.5rem;
-      font-size: 0.7rem;
+      font-size: 0.7rem !important;
     }
     
     .openalgo-controls-container .w-full {
@@ -580,13 +593,13 @@ function injectStyles() {
     }
     
     .openalgo-controls-container .text-xs {
-      font-size: 0.7rem;
+      font-size: 0.7rem !important;
     }
     
     .openalgo-controls-container .input-xs, 
     .openalgo-controls-container .select-xs {
       height: 1.5rem;
-      font-size: 0.7rem;
+      font-size: 0.7rem !important;
       padding: 0 0.5rem;
     }
     
@@ -597,7 +610,10 @@ function injectStyles() {
     
     .openalgo-controls-container .card-title {
       margin-bottom: 0.5rem;
-      font-weight: 700;
+      font-weight: 700 !important;
+      color: #374151 !important;
+      opacity: 1 !important;
+      visibility: visible !important;
     }
     
     .openalgo-controls-container .hidden {
@@ -610,15 +626,17 @@ function injectStyles() {
       right: 1rem;
       padding: 0.5rem 0.75rem;
       border-radius: 3px;
-      color: white;
-      font-weight: bold;
+      color: white !important;
+      font-weight: bold !important;
       z-index: 10001;
-      opacity: 1;
+      opacity: 1 !important;
       transition: all 0.3s ease;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       max-width: 250px;
-      font-size: 0.8rem;
+      font-size: 0.8rem !important;
       animation: slideIn 0.2s ease;
+      visibility: visible !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     }
     
     @keyframes slideIn {
@@ -633,17 +651,17 @@ function injectStyles() {
     }
     
     .openalgo-notification.success {
-      background-color: #36D399;
+      background-color: #36D399 !important;
       border-left: 3px solid #2bb37f;
     }
     
     .openalgo-notification.error {
-      background-color: #F87272;
+      background-color: #F87272 !important;
       border-left: 3px solid #e75757;
     }
     
     .openalgo-notification.info {
-      background-color: #3ABFF8;
+      background-color: #3ABFF8 !important;
       border-left: 3px solid #0d99ff;
     }
     

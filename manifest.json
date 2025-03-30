@@ -3,6 +3,7 @@
   "name": "OpenAlgo",
   "version": "1.0",
   "description": "OpenAlgo Chrome Extension",
+  "homepage_url": "https://openalgo.in",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
