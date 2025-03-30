@@ -26,7 +26,10 @@ function injectTradingButtons() {
   if (document.getElementById('openalgo-controls')) {
     return;
   }
-
+  
+  // Check if we're on the OpenAlgo dashboard page and position differently
+  const isOpenAlgoDashboard = window.location.href.includes('127.0.0.1:5000/dashboard');
+  
   // Create container for buttons
   const container = document.createElement('div');
   container.id = 'openalgo-controls';
@@ -164,8 +167,22 @@ function injectTradingButtons() {
   
   container.appendChild(settingsPanel);
   
-  // Append container to the body
-  document.body.appendChild(container);
+  // Position the container differently on the OpenAlgo dashboard
+  if (isOpenAlgoDashboard) {
+    container.style.top = '20px';
+    container.style.right = '20px';
+    container.style.left = 'auto';
+    
+    // Wait for the dashboard to fully load before adding
+    setTimeout(() => {
+      document.body.appendChild(container);
+    }, 1000);
+  } else {
+    // Default position for other sites
+    container.style.top = '100px';
+    container.style.left = '20px';
+    document.body.appendChild(container);
+  }
 }
 
 // Toggle settings panel
@@ -180,8 +197,6 @@ function makeDraggable(element) {
   let offsetX, offsetY;
   
   element.style.position = 'fixed';
-  element.style.top = '100px';
-  element.style.left = '20px';
   element.style.zIndex = '10000';
   
   // Add handle for dragging
@@ -347,6 +362,7 @@ function showNotification(message, type, isPersistent = false) {
 function injectStyles() {
   const style = document.createElement('style');
   style.textContent = `
+    /* Scope all styles to avoid affecting OpenAlgo dashboard */
     .openalgo-controls-container {
       display: flex;
       flex-direction: column;
@@ -358,6 +374,16 @@ function injectStyles() {
       position: fixed;
       z-index: 10000;
       transition: box-shadow 0.2s ease;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+      box-sizing: border-box;
+    }
+    
+    .openalgo-controls-container *, .openalgo-controls-container *::before, .openalgo-controls-container *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
     
     .openalgo-controls-container:hover {
@@ -470,25 +496,26 @@ function injectStyles() {
       display: none;
     }
     
-    .settings-form {
+    .openalgo-controls-container .settings-form {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
     
-    .form-group {
+    .openalgo-controls-container .form-group {
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
     
-    .form-group label {
+    .openalgo-controls-container .form-group label {
       font-size: 0.7rem;
       color: #374151;
       font-weight: 600;
     }
     
-    .form-group input, .form-group select {
+    .openalgo-controls-container .form-group input, 
+    .openalgo-controls-container .form-group select {
       padding: 3px 6px;
       border: 1px solid #d1d5db;
       border-radius: 3px;
@@ -497,15 +524,18 @@ function injectStyles() {
       background-color: white;
       z-index: 10002;
       position: relative;
+      width: 100%;
+      height: auto;
     }
     
-    .form-group input:focus, .form-group select:focus {
+    .openalgo-controls-container .form-group input:focus, 
+    .openalgo-controls-container .form-group select:focus {
       outline: none;
       border-color: #570df8;
       box-shadow: 0 0 0 1px rgba(87, 13, 248, 0.2);
     }
     
-    .btn {
+    .openalgo-controls-container .btn {
       display: inline-flex;
       cursor: pointer;
       align-items: center;
@@ -517,58 +547,60 @@ function injectStyles() {
       border: none;
     }
     
-    .btn-primary {
+    .openalgo-controls-container .btn-primary {
       background-color: #570df8;
       color: white;
     }
     
-    .btn-primary:hover {
+    .openalgo-controls-container .btn-primary:hover {
       background-color: #4506cb;
     }
     
-    .btn-xs {
+    .openalgo-controls-container .btn-xs {
       height: 1.5rem;
       padding-left: 0.5rem;
       padding-right: 0.5rem;
       font-size: 0.7rem;
     }
     
-    .w-full {
+    .openalgo-controls-container .w-full {
       width: 100%;
     }
     
-    .mt-2 {
+    .openalgo-controls-container .mt-2 {
       margin-top: 0.5rem;
     }
     
-    .card-body {
+    .openalgo-controls-container .card-body {
       padding: 0.5rem;
     }
     
-    .p-3 {
+    .openalgo-controls-container .p-3 {
       padding: 0.75rem;
     }
     
-    .text-xs {
+    .openalgo-controls-container .text-xs {
       font-size: 0.7rem;
     }
     
-    .input-xs, .select-xs {
+    .openalgo-controls-container .input-xs, 
+    .openalgo-controls-container .select-xs {
       height: 1.5rem;
       font-size: 0.7rem;
       padding: 0 0.5rem;
     }
     
-    .input-bordered, .select-bordered {
+    .openalgo-controls-container .input-bordered, 
+    .openalgo-controls-container .select-bordered {
       border: 1px solid #d1d5db;
     }
     
-    .card-title {
+    .openalgo-controls-container .card-title {
       margin-bottom: 0.5rem;
       font-weight: 700;
     }
     
-    .hidden {
+    .openalgo-controls-container .hidden {
       display: none;
     }
     
