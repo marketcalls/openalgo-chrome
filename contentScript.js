@@ -304,39 +304,43 @@ function placeSmartOrder(action, settings) {
 }
 
 // Make API call to OpenAlgo
+// Make API call to OpenAlgo via background script (bypasses CORS)
 function makeApiCall(url, data, actionText) {
   // Show loading indicator
   const loadingNotification = showNotification(`Processing ${actionText}...`, 'info', true);
-  
-  fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .then(data => {
+
+  // Send message to background script to make the API call
+  chrome.runtime.sendMessage({
+    action: 'placeOrder',
+    url: url,
+    orderData: data
+  }, (response) => {
     // Remove loading notification
     if (loadingNotification) {
       loadingNotification.remove();
     }
     
-    if (data.status === 'success') {
-      showNotification(`${actionText} successful!`, 'success');
+    // Check if there was an error in the message passing
+    if (chrome.runtime.lastError) {
+      showNotification(`Connection Error: ${chrome.runtime.lastError.message}`, 'error');
+      return;
+    }
+    
+    // Handle the response from background script
+    if (response && response.success) {
+      const responseData = response.data;
+      if (responseData.status === 'success') {
+        showNotification(`${actionText} successful!`, 'success');
+      } else {
+        showNotification(`Error: ${responseData.message || 'Unknown error'}`, 'error');
+      }
     } else {
-      showNotification(`Error: ${data.message || 'Unknown error'}`, 'error');
+      const errorMsg = response && response.error ? response.error : 'Unknown error occurred';
+      showNotification(`API Error: ${errorMsg}`, 'error');
     }
-  })
-  .catch(error => {
-    // Remove loading notification
-    if (loadingNotification) {
-      loadingNotification.remove();
-    }
-    
-    showNotification(`API Error: ${error.message}`, 'error');
   });
 }
+
 
 // Show notification on the page
 function showNotification(message, type, isPersistent = false) {
