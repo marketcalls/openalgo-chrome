@@ -1,94 +1,132 @@
 # OpenAlgo Chrome Extension
 
-A lightweight Chrome extension for OpenAlgo trading platform with DaisyUI-inspired UI controls.
+One-click trading buttons for your own [OpenAlgo](https://openalgo.in) server, on any website: TradingView, Chartink, broker terminals, news sites, anywhere.
 
-![OpenAlgo Chrome Extension](images/screenshot.png)
+![OpenAlgo floating trading bar on a TradingView chart](images/screenshot.png)
 
-## Features
+## What's new in 2.0
 
-- **Quick Trading Actions**: One-click access to LE (Long Entry), LX (Long Exit), SE (Short Entry), and SX (Short Exit) trading operations
-- **Compact Interface**: Minimal, draggable interface that stays out of your way while trading
-- **Integrated Settings**: Easy access to configuration via the vertical dots menu
-- **Modern UI**: DaisyUI-inspired styling with clean, modern aesthetics
-- **Notification System**: Clear visual feedback for all trading actions
+- **Works on every website.** v1 showed `API Error: Failed to fetch` everywhere except the OpenAlgo dashboard, because orders were sent from the web page and blocked by CORS, mixed-content and Local Network Access rules. v2 sends every request from the extension's background service worker, so the page's security policy no longer matters.
+- **Options entry and exit.** Buy or sell CE/PE at ATM, ITM1–10 or OTM1–10 with one click. The nearest expiry is picked automatically, or you can choose one. Exits close exactly the contracts you opened, even after the market has moved and ATM is a different strike.
+- **Live data over WebSocket.** The bar shows the live price and day change of your symbol, and tells you when an order fills or is rejected.
+- **Security hardened.** Your API key never touches the web page. Page scripts cannot click the buttons, read your settings, or trick you into clicking through an overlay. See [Security](#security).
+- **New UI.** A cleaner floating bar that follows the page's light or dark theme. You can drag it, minimise it, or show it only on the sites you choose. The popup is now a full trading and settings panel.
 
-## Prerequisites
+## Install
 
-- **OpenAlgo API Server**: The OpenAlgo server must be running and accessible before using this extension
-- **API Key**: You must have a valid API key for the OpenAlgo platform
-- **Configuration**: You must configure all settings before placing any orders
+1. Download `openalgo-chrome-v2.0.0.zip` from [Releases](https://github.com/marketcalls/openalgo-chrome/releases) and unzip it, or clone this repository.
+2. Open `chrome://extensions` and switch on **Developer mode** (top right).
+3. Click **Load unpacked** and select the unzipped folder.
+4. The settings page opens automatically. Pin the OpenAlgo icon to your toolbar for quick access.
 
-## Installation
+Upgrading from 1.x: your host URL, API key, symbol, exchange, product and quantity carry over. Your API key moves from Chrome Sync to this device only.
 
-### From Chrome Web Store
-*Coming soon*
+## Set up
 
-### Manual Installation
-1. Download or clone this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable "Developer mode" at the top right
-4. Click "Load unpacked" and select the directory containing the extension files
-5. The OpenAlgo extension icon should appear in your browser toolbar
+1. Start your OpenAlgo server.
+2. In the extension's **Settings** tab, enter the **Host URL** (default `http://127.0.0.1:5000`) and your **API key** (OpenAlgo → API Key).
+3. Click **Test connection**. You should see something like `✓ Connected to zerodha · Sandbox`.
+4. In the **Trade** tab, pick a mode and fill in the instrument.
 
-## Usage
+<img src="images/popup.png" alt="OpenAlgo popup: trade tab" width="300">
 
-### Getting Started
-1. **Start OpenAlgo Server**: Ensure your OpenAlgo API server is running and accessible
-2. **Configure Settings**: Click the vertical dots (⋮) menu and fill in all required settings
-3. **Save Settings**: Click the Save button to store your configuration
-4. **Place Orders**: Only after completing the above steps, use the trading buttons
+The status pill at the top of the popup and the label on the floating bar always show whether you are in **SANDBOX** (OpenAlgo Analyzer mode, simulated orders) or **LIVE** (real orders).
 
-### Trading Controls
-The extension injects a compact row of trading buttons into any webpage:
+## Trading
 
-- **LE** (Green): Long Entry - Place a buy order to open a long position
-- **LX** (Yellow): Long Exit - Close an existing long position
-- **SE** (Red): Short Entry - Place a sell order to open a short position  
-- **SX** (Blue): Short Exit - Close an existing short position
+### Equity / futures mode
 
-### Configuration
-Click the vertical dots (⋮) menu to access settings:
+| Button | Action | API call |
+|---|---|---|
+| **LE** | Long entry: BUY *quantity* at market | `placeorder` |
+| **LX** | Long exit: close the long position (does nothing if you are flat or short) | `openposition` → `placesmartorder` (position_size 0) |
+| **SE** | Short entry: SELL *quantity* at market | `placeorder` |
+| **SX** | Short exit: close the short position (does nothing if you are flat or long) | `openposition` → `placesmartorder` (position_size 0) |
 
-1. **Host URL**: Your OpenAlgo API server address (default: http://127.0.0.1:5000)
-2. **API Key**: Your unique OpenAlgo API key
-3. **Symbol**: Trading symbol/instrument (e.g., BHEL)
-4. **Exchange**: Select from NSE, BSE, BFO, NFO, MCX, or CDS
-5. **Product**: Select from MIS, NRML, or CNC
-6. **Quantity**: Number of units to trade
+### Options mode
 
-### Dragging
-- The entire button bar can be dragged to reposition it anywhere on the screen
-- A thin grab handle appears at the top when hovering
+Set the underlying (for example `NIFTY` on `NSE_INDEX`), expiry (or *Nearest expiry*), strike offset (ATM, ITM1–10, OTM1–10), side (buy or sell/write) and quantity in units. The popup shows the lot size, so `65` means one NIFTY lot.
+
+| Button | Action |
+|---|---|
+| **CE BUY / SELL** | Places a call at the chosen offset via `optionsorder`; the resolved contract (e.g. `NIFTY01DEC2625900CE`) is remembered |
+| **CE EXIT** | Closes every call contract opened from the extension via `placesmartorder` |
+| **PE BUY / SELL** | Same for puts |
+| **PE EXIT** | Closes every put contract opened from the extension |
+
+Switch between the two modes with the **EQ / OPT** chip on the bar or the toggle in the popup.
+
+### Floating bar
+
+- **Drag** it by the header. The position is remembered and stays on screen when the window is resized.
+- **–** minimises it to a small pill that still shows the live price. Click **OA** to expand it.
+- **⋮** or the symbol opens settings.
+- It stays usable over full-screen charts and page pop-ups.
+- Settings → *Show on* lets you choose every website, only the sites you switch on, or nowhere (popup only). The *Show on this site* switch toggles the current site.
+
+### Safety features
+
+- **Confirm before sending orders** (optional): the first click arms the button (`SURE?`), and a second click within 3 seconds sends the order.
+- While an order is in flight, the buttons are disabled, so a double click never sends two orders.
+- If the server does not answer within 15 seconds, or reports that the broker reply was lost, you are told the order *may* have been placed and to check the order book. The order is never retried automatically.
+- **Account actions** in the popup (*Close all positions*, *Cancel all orders*) also need a second click. They act on the whole account, as the OpenAlgo API does.
+
+## Live data (WebSocket)
+
+With *Live price & fill alerts* switched on, the extension connects to the OpenAlgo WebSocket proxy (default `ws://127.0.0.1:8765`, or `wss://<your-domain>/ws` for a remote HTTPS host; you can override this in Settings). It:
+
+- subscribes to a Quote feed for the symbol, or for the underlying in options mode, and shows LTP and day change;
+- subscribes to order updates and shows **Filled @ price** or **Rejected: reason** for orders placed from the extension only.
+
+The connection opens only while a bar or the popup is visible, and closes 30 seconds after the last one goes away.
+
+## Security
+
+| Risk in v1 | v2 |
+|---|---|
+| The API key was written into an `<input>` in every web page's DOM, so any site could read it | The key is stored only in `chrome.storage.local`, restricted to the extension's own pages. The content script never receives it |
+| Any web page could place orders with `document.getElementById('le-button').click()` | Buttons live in a **closed** shadow root on a plain `<div>` host (so a page cannot pre-register a custom element and open the root via `ElementInternals`). Synthetic (untrusted) events are ignored, and the content script can only ask for a fixed action name such as `LE` |
+| Settings were built with `innerHTML` from stored values (HTML injection) | All UI is built with DOM APIs; no `innerHTML` |
+| The API key was synced to the Google account via `chrome.storage.sync` | The key stays on this device; only non-secret preferences sync |
+| Page CSS could hide or restyle the buttons; a page overlay could trick you into clicking | The bar uses `!important` inline styles and the browser's top layer, and raises itself above any pop-up the page opens. A click must start and end on the same button. If the page moves, restyles, hides or covers the bar, it is put back and clicks are refused for a second. A double-click never confirms an order |
+| Network errors after an order was sent looked like plain failures, inviting a duplicate retry | Lost connections, timeouts, 5xx replies and proxy error pages on order calls say *"The order may have been placed. Check the order book before retrying."* |
+| — | The popup warns when the API key would travel over plain `http://` to a non-local server |
+
+**Privacy:** the extension talks only to the OpenAlgo server you configure. It collects no analytics and sends nothing anywhere else.
 
 ## Troubleshooting
 
-- **No Response from Buttons**: Ensure your OpenAlgo server is running and accessible
-- **Error Messages**: Check that all settings are correctly configured
-- **Connection Issues**: Verify the Host URL is correct and your server is reachable
+| Message | Fix |
+|---|---|
+| `Cannot reach OpenAlgo at …` | Start the OpenAlgo server and check the host URL in Settings |
+| `Invalid openalgo apikey` / HTTP 403 | Copy the API key again from OpenAlgo, and make sure you are logged in to your broker in OpenAlgo |
+| `Setup needed` on the bar | Fill in the symbol and quantity (or underlying and quantity in options mode) |
+| `No reply in 15s. The order may have been placed…` | Check the OpenAlgo order book before clicking again |
+| `The page just moved or covered the OpenAlgo bar` | The site moved the bar or put something over it. Check that the bar is clear and click again. If it keeps happening, drag the bar elsewhere |
+| Live price not showing | Check that the OpenAlgo WebSocket server is running (port 8765) and the WebSocket URL in Settings |
+| Bar missing on a tab opened before installing | It is injected automatically on install/update; reload the tab if it is still missing |
 
 ## Development
 
-### Project Structure
-- `manifest.json`: Extension configuration
-- `popup.html/js`: Extension popup interface
-- `contentScript.js`: Injects trading controls into web pages
-- `css/styles.css`: DaisyUI-inspired custom styling
+No build step and no dependencies: the extension is plain JavaScript.
 
-### Recent Enhancements
-- Modern UI with DaisyUI-inspired components
-- Compact and draggable button interface
-- Improved settings panel with better form controls
-- Added loading indicators for API operations
-- Visual notification system for trade actions
+| File | Purpose |
+|---|---|
+| `manifest.json` | MV3 manifest |
+| `shared.js` | Defaults and helpers shared by every context |
+| `background.js` | Service worker: REST + WebSocket client, order logic, message router |
+| `content.js` | Floating trading bar (closed shadow DOM) |
+| `popup.html` / `popup.css` / `popup.js` | Popup and settings page (also used as the options page) |
+
+`./package.sh` builds `dist/openalgo-chrome-v<version>.zip` for release or Chrome Web Store upload.
 
 ## Requirements
 
-- Chrome browser version 88 or higher
-- OpenAlgo API server (running locally or remotely)
-- Valid API key for OpenAlgo platform
+- Chrome 116 or later (or another Chromium-based browser)
+- OpenAlgo server with an API key
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT. See [LICENSE](LICENSE).
 
 Copyright (c) 2025 Marketcalls

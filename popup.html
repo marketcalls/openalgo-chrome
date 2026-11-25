@@ -1,86 +1,171 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OpenAlgo Trading Controls</title>
-  <link href="css/styles.css" rel="stylesheet" type="text/css" />
-  <style>
-    body {
-      width: 280px;
-      padding: 1.5rem;
-      text-align: center;
-      background-color: var(--base-100);
-    }
-    .logo-container {
-      margin-bottom: 1rem;
-      display: flex;
-      justify-content: center;
-    }
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
-    }
-    .status-container {
-      background-color: var(--base-200);
-      padding: 1rem;
-      border-radius: 0.75rem;
-      margin: 1rem 0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-    .status-text {
-      margin: 0.5rem 0;
-      font-size: 0.875rem;
-      color: var(--base-content);
-    }
-    .success {
-      color: var(--success);
-      font-weight: 600;
-    }
-    .help-text {
-      font-size: 0.75rem;
-      color: var(--base-content);
-      opacity: 0.8;
-      margin-top: 1rem;
-      line-height: 1.4;
-    }
-    .badge {
-      margin-bottom: 0.5rem;
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenAlgo</title>
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <div class="card">
-    <div class="card-body p-2">
-      <div class="logo-container">
-        <h1 class="logo">OpenAlgo</h1>
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <img src="images/icon48.png" alt="" width="28" height="28">
+        <div><strong>OpenAlgo</strong><span id="version"></span></div>
       </div>
-      
-      <div class="badge badge-primary">Trading Controls</div>
-      
-      <div class="status-container">
-        <div class="status-text success">
-          Trading buttons are ready to use
+      <div id="conn" class="pill" title="Connection status"><i></i><span>Checking…</span></div>
+    </header>
+
+    <nav class="tabs" role="tablist">
+      <button role="tab" id="tab-trade" aria-controls="panel-trade" aria-selected="true">Trade</button>
+      <button role="tab" id="tab-settings" aria-controls="panel-settings" aria-selected="false">Settings</button>
+    </nav>
+
+    <main>
+      <!-- ============================== TRADE ============================== -->
+      <section id="panel-trade" role="tabpanel" aria-labelledby="tab-trade">
+        <div id="setup" class="notice" hidden>
+          <b>Connect your OpenAlgo server</b>
+          <span>Add the host URL and API key to start trading.</span>
+          <button type="button" class="link" data-goto="settings">Open settings →</button>
         </div>
-      </div>
-      
-      <p class="help-text">
-        Use the vertical dots menu (⋮) on the trading buttons to configure settings
-      </p>
-      
-      <div class="flex justify-center gap-2 mt-2">
-        <span class="badge badge-outline" style="background-color: var(--le-color); color: white;">LE</span>
-        <span class="badge badge-outline" style="background-color: var(--lx-color); color: var(--neutral);">LX</span>
-        <span class="badge badge-outline" style="background-color: var(--se-color); color: white;">SE</span>
-        <span class="badge badge-outline" style="background-color: var(--sx-color); color: white;">SX</span>
-      </div>
-    </div>
+
+        <div class="seg" role="radiogroup" aria-label="Trading mode">
+          <button type="button" role="radio" data-mode="equity">Equity / F&amp;O</button>
+          <button type="button" role="radio" data-mode="options">Options</button>
+        </div>
+
+        <div id="equity" class="grid">
+          <label class="f span2">Symbol
+            <input id="symbol" autocomplete="off" spellcheck="false" placeholder="e.g. SBIN, NIFTY30DEC26FUT">
+          </label>
+          <label class="f">Exchange <select id="exchange"></select></label>
+          <label class="f">Product <select id="product"></select></label>
+          <label class="f span2">Quantity
+            <input id="quantity" type="number" min="1" step="1" inputmode="numeric" placeholder="Shares / units">
+          </label>
+        </div>
+
+        <div id="options" class="grid" hidden>
+          <label class="f">Underlying
+            <input id="optUnderlying" autocomplete="off" spellcheck="false" placeholder="NIFTY">
+          </label>
+          <label class="f">Exchange <select id="optExchange"></select></label>
+          <label class="f span2">Expiry
+            <span class="row">
+              <select id="optExpiry"><option value="">Nearest expiry (auto)</option></select>
+              <button type="button" id="loadExpiries" class="btn ghost sq" title="Load expiries from OpenAlgo" aria-label="Load expiries">
+                <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2.5v3h-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </span>
+          </label>
+          <label class="f">Strike <select id="optOffset"></select></label>
+          <label class="f">Side
+            <select id="optSide">
+              <option value="BUY">Buy options</option>
+              <option value="SELL">Sell (write) options</option>
+            </select>
+          </label>
+          <label class="f">Product <select id="optProduct"></select></label>
+          <label class="f">Quantity
+            <input id="optQuantity" type="number" min="1" step="1" inputmode="numeric" placeholder="Units, e.g. 65">
+          </label>
+          <p id="optInfo" class="hint span2"></p>
+        </div>
+
+        <div class="quote" id="quote">
+          <span class="qsym" id="qsym">-</span>
+          <span class="qltp" id="qltp"></span>
+          <span class="qchg" id="qchg"></span>
+          <span class="qpos" id="qpos" title="Net open position"></span>
+        </div>
+
+        <div class="actions" id="actions"></div>
+        <div id="result" class="result" role="status" aria-live="polite"></div>
+
+        <div id="tracked" class="tracked" hidden>
+          <div class="tracked-head"><span>Options opened here</span><button type="button" class="link" id="forget">Forget</button></div>
+          <ul id="trackedList"></ul>
+        </div>
+
+        <details class="danger">
+          <summary>Account actions</summary>
+          <p class="hint">These act on the whole account, not just this extension's orders.</p>
+          <div class="row">
+            <button type="button" class="btn danger-btn" id="closeAll">Close all positions</button>
+            <button type="button" class="btn danger-btn" id="cancelAll">Cancel all orders</button>
+          </div>
+        </details>
+      </section>
+
+      <!-- ============================ SETTINGS ============================ -->
+      <section id="panel-settings" role="tabpanel" aria-labelledby="tab-settings" hidden>
+        <h2>Connection</h2>
+        <div class="grid">
+          <label class="f span2">Host URL
+            <input id="hostUrl" type="url" autocomplete="off" spellcheck="false" placeholder="http://127.0.0.1:5000">
+          </label>
+          <label class="f span2">API key
+            <span class="row">
+              <input id="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="From OpenAlgo → API Key">
+              <button type="button" id="toggleKey" class="btn ghost sq" aria-label="Show API key" title="Show / hide">
+                <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8Z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>
+              </button>
+            </span>
+          </label>
+          <label class="f span2"><span>WebSocket URL <em>(optional)</em></span>
+            <input id="wsUrl" type="url" autocomplete="off" spellcheck="false">
+          </label>
+        </div>
+        <p id="hostWarn" class="warn-text" hidden></p>
+        <div class="row">
+          <button type="button" class="btn primary" id="test">Test connection</button>
+          <span id="testResult" class="test-result" role="status" aria-live="polite"></span>
+        </div>
+        <p class="hint">Your API key is stored only on this device and is never shown to web pages.</p>
+
+        <h2>Floating buttons</h2>
+        <div class="grid">
+          <label class="f span2">Show on
+            <select id="barMode">
+              <option value="all">Every website</option>
+              <option value="selected">Only sites I turn on</option>
+              <option value="off">Nowhere (use this popup)</option>
+            </select>
+          </label>
+        </div>
+        <label class="switch" id="siteRow" hidden>
+          <input type="checkbox" id="siteOn"><span class="track"></span>
+          <span class="lbl">Show on <b id="siteName"></b></span>
+        </label>
+        <label class="switch">
+          <input type="checkbox" id="confirmOrders"><span class="track"></span>
+          <span class="lbl">Confirm before sending orders <small>Click twice to place</small></span>
+        </label>
+        <label class="switch">
+          <input type="checkbox" id="liveData"><span class="track"></span>
+          <span class="lbl">Live price &amp; fill alerts <small>Uses the OpenAlgo WebSocket</small></span>
+        </label>
+        <div class="grid">
+          <label class="f span2">Bar theme
+            <select id="theme">
+              <option value="auto">Match the page</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </label>
+        </div>
+        <button type="button" class="link" id="resetPos">Reset bar position</button>
+      </section>
+    </main>
+
+    <footer>
+      <a href="https://docs.openalgo.in" target="_blank" rel="noopener noreferrer">Docs</a>
+      <a href="https://github.com/marketcalls/openalgo-chrome" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <span id="saved" class="saved" aria-live="polite"></span>
+    </footer>
   </div>
+  <script src="shared.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

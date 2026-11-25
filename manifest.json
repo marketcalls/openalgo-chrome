@@ -1,31 +1,45 @@
 {
   "manifest_version": 3,
   "name": "OpenAlgo",
-  "version": "1.0",
-  "description": "OpenAlgo Chrome Extension",
+  "version": "2.0.0",
+  "description": "One-click LE/LX/SE/SX and options entry/exit buttons for your OpenAlgo server, on any website, with live prices.",
   "homepage_url": "https://openalgo.in",
+  "minimum_chrome_version": "116",
   "action": {
     "default_popup": "popup.html",
+    "default_title": "OpenAlgo",
     "default_icon": {
       "16": "images/icon16.png",
       "48": "images/icon48.png",
       "128": "images/icon128.png"
     }
   },
+  "options_ui": {
+    "page": "popup.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
   "permissions": [
     "storage",
-    "activeTab"
+    "scripting"
   ],
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
-  },
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["contentScript.js"],
-      "css": ["content.css"]
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["shared.js", "content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
     }
   ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+  },
   "icons": {
     "16": "images/icon16.png",
     "48": "images/icon48.png",
