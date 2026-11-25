@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "OpenAlgo",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "One-click LE/LX/SE/SX and options entry/exit buttons for your OpenAlgo server, on any website, with live prices.",
   "homepage_url": "https://openalgo.in",
   "minimum_chrome_version": "116",

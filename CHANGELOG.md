@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1 (2026-11-25)
+
+### Fixed
+- Settings: the **Test connection** button no longer gets squeezed and clipped when the connection result is long; the result now wraps beside it.
+- README screenshot no longer shows a broker name.
+
 ## 2.0.0 (2026-11-25)
 
 ### Fixed

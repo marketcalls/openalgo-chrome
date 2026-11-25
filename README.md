@@ -14,7 +14,7 @@ One-click trading buttons for your own [OpenAlgo](https://openalgo.in) server, o
 
 ## Install
 
-1. Download `openalgo-chrome-v2.0.0.zip` from [Releases](https://github.com/marketcalls/openalgo-chrome/releases) and unzip it, or clone this repository.
+1. Download the latest `openalgo-chrome-v<version>.zip` from [Releases](https://github.com/marketcalls/openalgo-chrome/releases) and unzip it, or clone this repository.
 2. Open `chrome://extensions` and switch on **Developer mode** (top right).
 3. Click **Load unpacked** and select the unzipped folder.
 4. The settings page opens automatically. Pin the OpenAlgo icon to your toolbar for quick access.
